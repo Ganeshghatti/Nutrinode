@@ -1,4 +1,4 @@
-const users = require("../../Model/User");
+const userModel = require("../../Model/User");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
