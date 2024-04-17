@@ -5,10 +5,10 @@ const connectdatabase = async () => {
     await mongoose.connect(
       "mongodb+srv://ganeshghatti6:sqws9GqDCpSVw0T7@nutrinode.ftatk39.mongodb.net/?retryWrites=true&w=majority&appName=nutrinode"
     );
-    console.log("config connected");
+    console.log("db connected");
     
   } catch (error) {
-    console.log("config Failed" + error.message, error);
+    console.log("db Failed" + error.message, error);
   }
 };
 module.exports = connectdatabase;
