@@ -69,7 +69,7 @@ exports.login = async (req, res, next) => {
     if (!validator.isEmail(userdata.email)) {
       return res.status(400).send("Enter a valid email");
     }
-    const existingUser = await users.findOne({ email: userdata.email });
+    const existingUser = await userModel.findOne({ email: userdata.email });
     if (!existingUser) {
       return res.status(400).json({ error: "Wrong email or password" });
     }
@@ -93,6 +93,7 @@ exports.login = async (req, res, next) => {
       isVerified: existingUser.isVerified,
     });
   } catch (error) {
+    console.log(error)
     sendErrorEmail(
       userdata.name,
       userdata.email,
