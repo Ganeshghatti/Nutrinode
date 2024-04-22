@@ -11,6 +11,18 @@ const UserSchema = new mongoose.Schema({
     immutable: true,
   },
   username: String,
+  phone: String,
+  address: String,
+  diet: {
+    date: String,
+    items: [{
+      name:String,
+      Carb:Number,
+      Protein:Number,
+      Fat:Number,
+      Calories:Number,
+    }],
+  },
   resetPasswordToken: String,
   resetPasswordExpires: String,
 });

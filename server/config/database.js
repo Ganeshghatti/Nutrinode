@@ -2,13 +2,10 @@ const mongoose = require("mongoose");
 
 const connectdatabase = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://ganeshghatti6:sqws9GqDCpSVw0T7@nutrinode.ftatk39.mongodb.net/?retryWrites=true&w=majority&appName=nutrinode"
-    );
+    await mongoose.connect(process.env.MONGODB_CONNECT_URI);
     console.log("db connected");
-    
   } catch (error) {
-    console.log("db Failed" + error.message, error);
+    console.log("db connection failed" + error.message);
   }
 };
 module.exports = connectdatabase;

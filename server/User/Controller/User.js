@@ -90,10 +90,9 @@ exports.login = async (req, res, next) => {
       email: existingUser.email,
       username: existingUser.username,
       token: jwttoken,
-      isVerified: existingUser.isVerified,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     sendErrorEmail(
       userdata.name,
       userdata.email,
@@ -104,34 +103,34 @@ exports.login = async (req, res, next) => {
 };
 
 exports.MyAccount = async (req, res, next) => {
-  const { email } = req.params;
-
   try {
-    const user = await userModel.findOne({ email }).populate("coursesEnrolled"); // Eagerly load courses
+    const user = await userModel.findOne({ email: req.user.email });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const enrichedCourses = [];
-    for (const courseEnrollment of user.coursesEnrolled) {
-      if (courseEnrollment.courseId) {
-        // Check for valid courseId
-        const course = await courseModel.find({
-          courseId: courseEnrollment.courseId,
-        });
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-        if (course) {
-          enrichedCourses.push({
-            courseName: course.courseName,
-            thumbnail: course.thumbnail,
-          });
-        }
-      }
+exports.EditAccount = async (req, res, next) => {
+  const { email, phone, address, username } = req.body;
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-    console.log(enrichedCourses)
+    user.phone = phone;
+    user.address = address;
+    user.username = username;
+    const userupdated = await user.save();
 
-    res.status(200).json({ user, enrichedCourses });
+    res.status(200).json({ user: userupdated });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -210,5 +209,42 @@ exports.ResetPassword = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.AddToDiet = async (req, res, next) => {
+  const { email, item } = req.body;
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (user.diet.date === moment().format("L")) {
+      user.diet.items.push(item);
+    } else {
+      user.diet.date = moment().format("L");
+      user.diet.items.push(item);
+    }
+    await user.save()
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.GetDiet = async (req, res, next) => {
+  try {
+    console.log(req.user)
+    const user = await userModel.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ diet: user.diet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
