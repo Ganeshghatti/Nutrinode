@@ -15,13 +15,7 @@ const UserSchema = new mongoose.Schema({
   address: String,
   diet: {
     date: String,
-    items: [{
-      name:String,
-      Carb:String,
-      Protein:String,
-      Fat:String,
-      Calories:String,
-    }],
+    items: [],
   },
   resetPasswordToken: String,
   resetPasswordExpires: String,
